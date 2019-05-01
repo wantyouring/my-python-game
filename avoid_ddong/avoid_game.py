@@ -21,7 +21,7 @@ def playgame(gamepad,man,ddong,clock):
     man_x = PAD_WIDTH * 0.5
     man_y = PAD_HEIGHT * 0.9
     ddong_x, ddong_y = [], []
-    ddong_speed = 5
+    ddong_speed = 10
     ddong_total_cnt = 10
     score = 0
 
@@ -34,6 +34,9 @@ def playgame(gamepad,man,ddong,clock):
     #계속 키입력 받으며 게임 진행.
     while not end_game:
         for event in pygame.event.get():
+            if event.type == pygame.QUIT: # 종료
+                pygame.quit()
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     dx -= 5
@@ -80,9 +83,9 @@ def playgame(gamepad,man,ddong,clock):
         gamepad.blit(text,(380,30))
         pygame.display.update()
 
-        print(score)
+        print()
 
-        # 게임 진행속도
+        # FPS
         clock.tick(100)
 
 

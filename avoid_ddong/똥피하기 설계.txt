@@ -5,3 +5,27 @@
 떨어진 똥 count
 죽었는지 판별
 랜덤으로 똥 떨어트리기
+
+
+----------------------------
+- 모니터가 없는 환경에서 rendering 없이 pygame 실행하기
+import os
+os.environ["SDL_VIDEODRIVER"] = "dummy"
+https://pygame.org/wiki/HeadlessNoWindowsNeeded?parent=
+
+출처: https://newsight.tistory.com/253 [New Sight]
+----------------
+state 전달방법
+1. 똥 위치들 + 사람 위치 좌표 정보 state로 전달.
+2. gamepad의 정보를 그대로 state로 전달.(방법을 아직 못찾음)
+3. play중인 윈도우 화면정보를 기반으로 state전달.(학습 가장 느릴듯함)
+
+action
+1. 정지,왼,오 => dx좌표 +0, -5, +5 바꿔주기.
+2. 키보드 누름,땜(왼,오) 0,1,2,3(왼D,왼U,오D,오U) 
+  => 각 방향의 D전에 무조건 U, U전에 무조건 D조건이 붙음.
+
+reward
+score++될 때마다 reward주기.
+죽으면 reward -100패널티.
+
