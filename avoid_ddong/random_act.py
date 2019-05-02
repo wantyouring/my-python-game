@@ -7,12 +7,11 @@ import numpy as np
 import os
 from time import sleep
 from collections import deque
-from doubleDQN import DoubleDQNAgent
 
 os.environ["SDL_VIDEODRIVER"] = "dummy" # rendering없이 pygame실행하기.
 
 ##### 학습 variable
-EPISODES = 50000
+EPISODES = 5000
 state_size = 22  # 똥 x좌표 10개 + 똥 y좌표 10개 + man x좌표 + man y좌표
 action_size = 3  # 정지,좌,우
 global_step = 0
@@ -39,7 +38,7 @@ def reshape_to_state(ddong_x, ddong_y, man_x, man_y):
     state.append(man_y)
     return np.reshape(state, [1, state_size])
 
-def playgame(gamepad,man,ddong,clock,agent):
+def playgame(gamepad,man,ddong,clock):
     global global_step, episodes, scores, avg_q_max_record
     end_game = False
     man_x = PAD_WIDTH * 0.5
@@ -50,7 +49,6 @@ def playgame(gamepad,man,ddong,clock,agent):
     score = 0
     # 학습 variable
     epi_step = 0
-    agent.avg_q_max = 0
 
     # 초기 똥 추가
     for i in range(ddong_total_cnt):
@@ -67,7 +65,7 @@ def playgame(gamepad,man,ddong,clock,agent):
         epi_step += 1
         global_step += 1
         if epi_step % 4 == 0: #4단위 frameskip. 4step씩 같은 행동 취하기.
-            action = agent.get_action(state)
+            action = random.randrange(0,3)
 
         # action에 따른 위치변화.
         if action == 1:
@@ -92,14 +90,12 @@ def playgame(gamepad,man,ddong,clock,agent):
             if value > PAD_HEIGHT:
                 ddong_x[index] = int(random.randrange(0,PAD_WIDTH - man_width) / 48) * 48
                 ddong_y[index] = -ddong_height
-                reward = 1 # 똥 안맞으면 reward
                 score += 1
 
         # 똥 맞았는지 체크
         for index, value in enumerate(ddong_y):
             if abs(ddong_x[index] - man_x) < ddong_width and man_y - ddong_y[index] <  ddong_height:
                 end_game = True
-                reward = -100 # 똥 맞으면 패널티
 
         # 배경, 사람, 똥 그리기, 점수표시
         '''
@@ -116,18 +112,11 @@ def playgame(gamepad,man,ddong,clock,agent):
 
         # ---여기까지 해당 action에 대해 step끝남
 
-        agent.avg_q_max += np.amax(agent.model.predict(state)[0])
         if epi_step % 4 == 0 or end_game: # 4단위로 frame skip, 끝나는 상황은 체크
             next_state = reshape_to_state(ddong_x, ddong_y, man_x, man_y)
-            agent.append_sample(state, action, reward, next_state, end_game)
-            agent.train_model()
             state = next_state
 
-        if global_step % agent.update_target_rate == 0:
-            agent.update_target_model()
-
         if end_game:
-            avg_q_max_record.append(agent.avg_q_max / float(epi_step))
             return epi_step, score
 
         # FPS
@@ -144,11 +133,8 @@ if __name__ == "__main__":
     ddong = pygame.image.load('ddong.png')
     clock = pygame.time.Clock()
 
-    agent = DoubleDQNAgent(state_size, action_size)
-    agent.load_model() #@@@@@@@@@모델 로드
-
     for e in range(EPISODES):
-        epi_step, score = playgame(gamepad,man,ddong,clock,agent)
+        epi_step, score = playgame(gamepad,man,ddong,clock)
         scores.append(score)
         avg = 0
         if e < 30:
@@ -162,14 +148,9 @@ if __name__ == "__main__":
             scores30.append(avg)
 
         episodes.append(e)
-        print("epi : {}. score : {}. epi_step : {}. memory len : {}. epsilon : {}.".format(e,score,epi_step,len(agent.memory),agent.epsilon))
+        print("epi : {}. score : {}. epi_step : {}.".format(e,score,epi_step))
         if e % 50 == 0:
             pylab.figure(1)
             pylab.plot(episodes, scores, 'b')
             pylab.plot(episodes, scores30, 'r')
-            pylab.savefig("./ddqn.png")
-
-            pylab.figure(2)
-            pylab.plot(episodes, avg_q_max_record)
-            pylab.savefig("./avg_q_max.png")
-            agent.model.save_weights("./ddqn.h5")
+            pylab.savefig("./random_play.png")

@@ -54,27 +54,26 @@ def playgame(gamepad,man,ddong,clock,agent):
 
     # 초기 똥 추가
     for i in range(ddong_total_cnt):
-        ddong_x.append(int(random.randrange(0,PAD_WIDTH - man_width) / 48) * 48) # 특정 위치에서만 똥 떨어지게 환경 단순화.
+        ddong_x.append(random.randrange(0,PAD_WIDTH - man_width))
         ddong_y.append(random.randrange(-PAD_HEIGHT,0))
 
     # 초기 state
     state = reshape_to_state(ddong_x, ddong_y, man_x, man_y)
-    action = 0
+
     dx = 0
     # 게임 진행.
     while not end_game:
         reward = 0
         epi_step += 1
         global_step += 1
-        if epi_step % 4 == 0: #4단위 frameskip. 4step씩 같은 행동 취하기.
-            action = agent.get_action(state)
+        action = agent.get_action(state)
 
         # action에 따른 위치변화.
         if action == 1:
             dx -= 5
         elif action == 2:
             dx += 5
-        # else action == 0:
+        # else action == 3:
         #   dx = dx
 
         # ---여기부터 해당 action에 대해 step
@@ -90,7 +89,7 @@ def playgame(gamepad,man,ddong,clock,agent):
             ddong_y[index] += ddong_speed
             # 똥 끝까지 떨어졌을 시 새로운 똥 ㄱㄱ
             if value > PAD_HEIGHT:
-                ddong_x[index] = int(random.randrange(0,PAD_WIDTH - man_width) / 48) * 48
+                ddong_x[index] = random.randrange(0,PAD_WIDTH - man_width)
                 ddong_y[index] = -ddong_height
                 reward = 1 # 똥 안맞으면 reward
                 score += 1
@@ -117,7 +116,7 @@ def playgame(gamepad,man,ddong,clock,agent):
         # ---여기까지 해당 action에 대해 step끝남
 
         agent.avg_q_max += np.amax(agent.model.predict(state)[0])
-        if epi_step % 4 == 0 or end_game: # 4단위로 frame skip, 끝나는 상황은 체크
+        if epi_step % 4 == 0 or end_game: # 5단위로 frame skip, 끝나는 상황은 체크
             next_state = reshape_to_state(ddong_x, ddong_y, man_x, man_y)
             agent.append_sample(state, action, reward, next_state, end_game)
             agent.train_model()
@@ -131,8 +130,7 @@ def playgame(gamepad,man,ddong,clock,agent):
             return epi_step, score
 
         # FPS
-        clock.tick(100000000000000)
-        #clock.tick(100000)
+        clock.tick(100)
 
 
 if __name__ == "__main__":
@@ -145,7 +143,7 @@ if __name__ == "__main__":
     clock = pygame.time.Clock()
 
     agent = DoubleDQNAgent(state_size, action_size)
-    agent.load_model() #@@@@@@@@@모델 로드
+    #agent.load_model() #@@@@@@@@@모델 로드
 
     for e in range(EPISODES):
         epi_step, score = playgame(gamepad,man,ddong,clock,agent)
@@ -162,7 +160,7 @@ if __name__ == "__main__":
             scores30.append(avg)
 
         episodes.append(e)
-        print("epi : {}. score : {}. epi_step : {}. memory len : {}. epsilon : {}.".format(e,score,epi_step,len(agent.memory),agent.epsilon))
+        print("epi : {}. score : {}. epi_step : {}".format(e,score,epi_step))
         if e % 50 == 0:
             pylab.figure(1)
             pylab.plot(episodes, scores, 'b')

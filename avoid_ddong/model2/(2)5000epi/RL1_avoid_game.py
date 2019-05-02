@@ -59,22 +59,21 @@ def playgame(gamepad,man,ddong,clock,agent):
 
     # 초기 state
     state = reshape_to_state(ddong_x, ddong_y, man_x, man_y)
-    action = 0
+
     dx = 0
     # 게임 진행.
     while not end_game:
         reward = 0
         epi_step += 1
         global_step += 1
-        if epi_step % 4 == 0: #4단위 frameskip. 4step씩 같은 행동 취하기.
-            action = agent.get_action(state)
+        action = agent.get_action(state)
 
         # action에 따른 위치변화.
         if action == 1:
             dx -= 5
         elif action == 2:
             dx += 5
-        # else action == 0:
+        # else action == 3:
         #   dx = dx
 
         # ---여기부터 해당 action에 대해 step
@@ -117,7 +116,7 @@ def playgame(gamepad,man,ddong,clock,agent):
         # ---여기까지 해당 action에 대해 step끝남
 
         agent.avg_q_max += np.amax(agent.model.predict(state)[0])
-        if epi_step % 4 == 0 or end_game: # 4단위로 frame skip, 끝나는 상황은 체크
+        if epi_step % 4 == 0 or end_game: # 5단위로 frame skip, 끝나는 상황은 체크
             next_state = reshape_to_state(ddong_x, ddong_y, man_x, man_y)
             agent.append_sample(state, action, reward, next_state, end_game)
             agent.train_model()
@@ -131,7 +130,7 @@ def playgame(gamepad,man,ddong,clock,agent):
             return epi_step, score
 
         # FPS
-        clock.tick(100000000000000)
+        clock.tick(100000000000)
         #clock.tick(100000)
 
 

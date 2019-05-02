@@ -66,8 +66,7 @@ def playgame(gamepad,man,ddong,clock,agent):
         reward = 0
         epi_step += 1
         global_step += 1
-        if epi_step % 4 == 0: #4단위 frameskip. 4step씩 같은 행동 취하기.
-            action = agent.get_action(state)
+        action = agent.get_action(state)
 
         # action에 따른 위치변화.
         if action == 1:
@@ -117,11 +116,10 @@ def playgame(gamepad,man,ddong,clock,agent):
         # ---여기까지 해당 action에 대해 step끝남
 
         agent.avg_q_max += np.amax(agent.model.predict(state)[0])
-        if epi_step % 4 == 0 or end_game: # 4단위로 frame skip, 끝나는 상황은 체크
-            next_state = reshape_to_state(ddong_x, ddong_y, man_x, man_y)
-            agent.append_sample(state, action, reward, next_state, end_game)
-            agent.train_model()
-            state = next_state
+        next_state = reshape_to_state(ddong_x, ddong_y, man_x, man_y)
+        agent.append_sample(state, action, reward, next_state, end_game)
+        agent.train_model()
+        state = next_state
 
         if global_step % agent.update_target_rate == 0:
             agent.update_target_model()
@@ -145,7 +143,7 @@ if __name__ == "__main__":
     clock = pygame.time.Clock()
 
     agent = DoubleDQNAgent(state_size, action_size)
-    agent.load_model() #@@@@@@@@@모델 로드
+    #agent.load_model() #@@@@@@@@@모델 로드
 
     for e in range(EPISODES):
         epi_step, score = playgame(gamepad,man,ddong,clock,agent)
@@ -167,9 +165,9 @@ if __name__ == "__main__":
             pylab.figure(1)
             pylab.plot(episodes, scores, 'b')
             pylab.plot(episodes, scores30, 'r')
-            pylab.savefig("./ddqn.png")
+            pylab.savefig("./ddqn2.png")
 
             pylab.figure(2)
             pylab.plot(episodes, avg_q_max_record)
-            pylab.savefig("./avg_q_max.png")
+            pylab.savefig("./avg_q_max2.png")
             agent.model.save_weights("./ddqn.h5")

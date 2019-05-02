@@ -1,0 +1,24 @@
+랜덤평균은 약 10정도
+
+model1
+frame skip 5단위(5
+64 64 3 dense layer.
+=> 학습 잘 안됨
+
+model2
+frame skip 4단위
+256 128 3 dense layer
+=> 2400epi까지 학습 잘 안됨.
+avg qmax가 일정 이상 안올라감. 더 큰 layer써보기.
+
+lr늘리고 update_target_rate줄여 다시 학습해보기.
+랜덤으로 떨어지는 똥의 위치를 특정 n개 위치에서만 떨어지게끔 환경 바꾸기!
+
+model3
+1024 512 3 dense layer로 학습
+=> 3000epi까지 학습해놓은거 이어서 학습시켜보기. 현재까지는 그냥 random보다 살짝 좋은정도...lr *1/10 더 줄여보기.
+
+model4
+frame skip 없이 학습시켜보자.
+256 256 3 dense layer
+=> model3보다 더 안됨.

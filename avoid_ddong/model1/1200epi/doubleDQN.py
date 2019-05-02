@@ -17,14 +17,14 @@ class DoubleDQNAgent:
 
         # DDQN 하이퍼 파라미터
         self.discount_factor = 0.99
-        self.learning_rate = 0.000001
+        self.learning_rate = 0.00001
         self.epsilon = 1.0
         self.epsilon_decay = 0.999
         self.epsilon_min = 0.1
         self.batch_size = 32
-        self.train_start = 30000
+        self.train_start = 3000
         self.update_target_rate = 3000
-        self.memory = deque(maxlen=100000)
+        self.memory = deque(maxlen=10000)
         self.avg_q_max = 0 # 학습 잘 되는지 확인.
 
         # 학습모델, 타겟모델 두 개 생성.
@@ -42,8 +42,8 @@ class DoubleDQNAgent:
     # fully connected layer사용
     def build_model(self):
         model = Sequential()
-        model.add(Dense(1024, input_dim=self.state_size, activation='relu'))
-        model.add(Dense(512, activation='relu'))
+        model.add(Dense(64, input_dim=self.state_size, activation='relu'))
+        model.add(Dense(64, activation='relu'))
         model.add(Dense(self.action_size, activation='linear'))
         model.summary()
         model.compile(loss='mse', optimizer=Adam(lr=self.learning_rate))

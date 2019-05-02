@@ -145,7 +145,7 @@ if __name__ == "__main__":
     clock = pygame.time.Clock()
 
     agent = DoubleDQNAgent(state_size, action_size)
-    agent.load_model() #@@@@@@@@@모델 로드
+    #agent.load_model() #@@@@@@@@@모델 로드
 
     for e in range(EPISODES):
         epi_step, score = playgame(gamepad,man,ddong,clock,agent)
