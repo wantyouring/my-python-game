@@ -8,7 +8,7 @@ import os
 from time import sleep
 from collections import deque
 
-os.environ["SDL_VIDEODRIVER"] = "dummy" # rendering없이 pygame실행하기.
+#os.environ["SDL_VIDEODRIVER"] = "dummy" # rendering없이 pygame실행하기.
 
 ##### 학습 variable
 EPISODES = 5000
@@ -21,14 +21,14 @@ score_deque = deque(maxlen=30)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 #게임화면 크기
-PAD_WIDTH = 480
-PAD_HEIGHT = 640
+PAD_WIDTH = 48
+PAD_HEIGHT = 64
 #똥크기
-ddong_width = 26
-ddong_height = 26
+ddong_width = 4
+ddong_height = 4
 #사람크기
-man_width = 36
-man_height = 38
+man_width = 4
+man_height = 4
 
 # state구성. 똥좌표, 사람 좌표 붙여 구성.
 def reshape_to_state(ddong_x, ddong_y, man_x, man_y):
@@ -44,7 +44,7 @@ def playgame(gamepad,man,ddong,clock):
     man_x = PAD_WIDTH * 0.5
     man_y = PAD_HEIGHT * 0.9
     ddong_x, ddong_y = [], []
-    ddong_speed = 10
+    ddong_speed = 1
     ddong_total_cnt = 10
     score = 0
     # 학습 variable
@@ -98,7 +98,7 @@ def playgame(gamepad,man,ddong,clock):
                 end_game = True
 
         # 배경, 사람, 똥 그리기, 점수표시
-        '''
+
         gamepad.fill(BLACK) # 배경
         gamepad.blit(man, (man_x, man_y)) # 사람
         for index, value in enumerate(ddong_y): # 똥
@@ -108,7 +108,7 @@ def playgame(gamepad,man,ddong,clock):
         text = font.render('Score: {}'.format(score), True, (255, 255, 255))
         gamepad.blit(text, (380, 30))
         pygame.display.update()
-        '''
+
 
         # ---여기까지 해당 action에 대해 step끝남
 
@@ -120,7 +120,7 @@ def playgame(gamepad,man,ddong,clock):
             return epi_step, score
 
         # FPS
-        clock.tick(100000000000000)
+        clock.tick(60)
         #clock.tick(100000)
 
 
