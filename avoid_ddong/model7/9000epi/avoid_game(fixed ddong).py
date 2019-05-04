@@ -12,8 +12,8 @@ from doubleDQN import DoubleDQNAgent
 
 ##### 학습 variable
 EPISODES = 5000000
-LOAD_MODEL = True
-RENDER = True # rendering하며 model play
+LOAD_MODEL = False
+RENDER = False # rendering하며 model play
 TOTAL_DDONG = 8
 
 state_size = TOTAL_DDONG * 2 + 2  # 똥 x좌표 n개 + 똥 y좌표 n개 + man x좌표 + man y좌표
@@ -143,7 +143,7 @@ def playgame(gamepad,man,ddong,clock,agent):
 
         # FPS
         if RENDER == True:
-            clock.tick(60)
+            clock.tick(20)
         else:
             clock.tick(100000000000000)
         #clock.tick(100000000000000)
