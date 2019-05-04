@@ -23,7 +23,7 @@ class DoubleDQNAgent:
         self.epsilon_min = 0.01
         self.batch_size = 32
         self.train_start = 5000
-        self.update_target_rate = 300
+        self.update_target_rate = 3000
         self.memory = deque(maxlen=10000)
         self.avg_q_max = 0 # 학습 잘 되는지 확인.
 

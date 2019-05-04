@@ -13,7 +13,6 @@ os.environ["SDL_VIDEODRIVER"] = "dummy" # rendering없이 pygame실행하기.
 
 ##### 학습 variable
 EPISODES = 50000
-LOAD_MODEL = False
 state_size = 22  # 똥 x좌표 10개 + 똥 y좌표 10개 + man x좌표 + man y좌표
 action_size = 3  # 정지,좌,우
 global_step = 0
@@ -46,7 +45,7 @@ def playgame(gamepad,man,ddong,clock,agent):
     man_x = PAD_WIDTH * 0.5
     man_y = PAD_HEIGHT * 0.9
     ddong_x, ddong_y = [], []
-    ddong_speed = 32
+    ddong_speed = 10
     ddong_total_cnt = 10
     score = 0
     # 학습 variable
@@ -56,8 +55,7 @@ def playgame(gamepad,man,ddong,clock,agent):
     # 초기 똥 추가
     for i in range(ddong_total_cnt):
         ddong_x.append(int(random.randrange(0,PAD_WIDTH - man_width) / 48) * 48) # 특정 위치에서만 똥 떨어지게 환경 단순화.
-        #ddong_y.append(random.randrange(-PAD_HEIGHT,0)) # 640 / 20 = 32
-        ddong_y.append(random.randrange(0,20) * -32)
+        ddong_y.append(random.randrange(-PAD_HEIGHT,0))
 
     # 초기 state
     state = reshape_to_state(ddong_x, ddong_y, man_x, man_y)
@@ -147,8 +145,7 @@ if __name__ == "__main__":
     clock = pygame.time.Clock()
 
     agent = DoubleDQNAgent(state_size, action_size)
-    if LOAD_MODEL == True:
-        agent.load_model() #@@@@@@@@@모델 로드
+    agent.load_model() #@@@@@@@@@모델 로드
 
     for e in range(EPISODES):
         epi_step, score = playgame(gamepad,man,ddong,clock,agent)

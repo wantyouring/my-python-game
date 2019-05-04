@@ -13,7 +13,7 @@ os.environ["SDL_VIDEODRIVER"] = "dummy" # rendering없이 pygame실행하기.
 
 ##### 학습 variable
 EPISODES = 50000
-LOAD_MODEL = False
+LOAD_MODEL = True
 state_size = 22  # 똥 x좌표 10개 + 똥 y좌표 10개 + man x좌표 + man y좌표
 action_size = 3  # 정지,좌,우
 global_step = 0
