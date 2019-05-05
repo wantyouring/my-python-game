@@ -25,7 +25,7 @@ man_height = 4
 
 ##### 학습 variable
 EPISODES = 5000000
-LOAD_MODEL = False
+LOAD_MODEL = True
 RENDER = False # rendering하며 model play
 
 TOTAL_DDONG = 8
@@ -50,13 +50,12 @@ def reshape_to_state(ddong_x, ddong_y, man_x, man_y):
         for j in range(ddong_height):
             for k in range(ddong_width):
                 if ddong_y[i] >= 0 and ddong_y[i] + j < PAD_HEIGHT:
-                    state[ddong_y[i] + j][ddong_x[i] + k] = 1
+                    state[ddong_y[i] + j][ddong_x[i] + k] = 255
 
     # 사람 위치 2로
     for i in range(man_height):
         for j in range(man_width):
-            state[man_y + i][man_x + j] = 2
-
+            state[man_y + i][man_x + j] = 180
     return np.reshape([state],(1,PAD_HEIGHT,PAD_WIDTH,1))
     #return np.reshape(state, [1, state_size])
 
@@ -204,7 +203,7 @@ if __name__ == "__main__":
 
         episodes.append(e)
         print("epi : {}. score : {}. epi_step : {}. memory len : {}. epsilon : {}.".format(e,score,epi_step,len(agent.memory),agent.epsilon))
-        if e % 50 == 0:
+        if e % 50 == 0 and RENDER == False:
             pylab.figure(1)
             pylab.plot(episodes, scores, 'k')
             pylab.plot(episodes, scores30, 'y')

@@ -42,8 +42,9 @@ class DoubleDQNAgent:
     # cnn사용
     def build_model(self):
         model = Sequential()
-        model.add(Conv2D(16,(4,4),strides=(2,2),activation='relu',input_shape=self.state_size))
-        model.add(Conv2D(32,(2,2),strides=(1,1),activation='relu'))
+        model.add(Conv2D(8, (6, 6), strides=(3, 3), activation='relu', input_shape=self.state_size))
+        model.add(Conv2D(16,(4,4),strides=(2,2),activation='relu'))
+        model.add(Conv2D(16,(2,2),strides=(1,1),activation='relu'))
         model.add(Flatten())
         model.add(Dense(256,activation='relu'))
         model.add(Dense(self.action_size))

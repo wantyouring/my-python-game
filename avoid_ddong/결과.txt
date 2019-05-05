@@ -49,7 +49,59 @@ model7
 똥 갯수 조금 줄여보기.
 => 학습됨.
 
-model8
-layer 층을 여러개로 늘려보기
+-----------------------------------------------
+RL2_avoid_game.py와 cnn_doubleDQN.py에서 cnn적용하였음.
+model1 : 
+model = Sequential()
+        model.add(Conv2D(16,(4,4),strides=(2,2),activation='relu',input_shape=self.state_size))
+        model.add(Conv2D(32,(2,2),strides=(1,1),activation='relu'))
+        model.add(Flatten())
+        model.add(Dense(256,activation='relu'))
+        model.add(Dense(self.action_size))
+        model.summary()
+        model.compile(loss='mse',optimizer=Adam(lr=self.learning_rate))
+        return model
+=> 오래걸려 일단 1500epi까지 학습 후 보류.
+model2
+model = Sequential()
+        model.add(Conv2D(2,(4,4),strides=(2,2),activation='relu',input_shape=self.state_size))
+        model.add(Conv2D(2,(2,2),strides=(1,1),activation='relu'))
+        model.add(Flatten())
+        model.add(Dense(256,activation='relu'))
+        model.add(Dense(self.action_size))
+        model.summary()
+        model.compile(loss='mse',optimizer=Adam(lr=self.learning_rate))
+        return model
+필터 갯수 줄여봄.
+3000
+3000+3000
+3000+3000+10000epi => 학습 잘 안됨.
 
-cnn사용해야하나??
+model3
+    def build_model(self):
+        model = Sequential()
+        model.add(Conv2D(4,(4,4),strides=(2,2),activation='relu',input_shape=self.state_size))
+        model.add(Conv2D(8,(2,2),strides=(1,1),activation='relu'))
+        model.add(Flatten())
+        model.add(Dense(256,activation='relu'))
+        model.add(Dense(self.action_size))
+        model.summary()
+        model.compile(loss='mse',optimizer=Adam(lr=self.learning_rate))
+        return model
+
+=> 잘 안됨.
+lr bigger or smaller...(아직 학습 안해봄)
+
+model4
+똥 255, 사람 180, 빈칸 0으로 초기화 해보기. 
+
+model5
+필터 수 줄여서. => 잘 안됨. 필터 늘리는게 훨씬 잘 됨.
+
+model6
+필터 8,16,16
+6500epi까지 학습. lr줄이고 이어서.
+
+최근 30epi평균이 10~20에서 더이상 올라가지 않는 문제.
+
+
