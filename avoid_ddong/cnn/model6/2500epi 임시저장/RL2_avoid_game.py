@@ -26,14 +26,13 @@ man_height = 4
 ##### 학습 variable
 EPISODES = 5000000
 LOAD_MODEL = True
-RENDER = True # rendering하며 model play
+RENDER = False # rendering하며 model play
 
 TOTAL_DDONG = 8
 
 state_size = (PAD_HEIGHT,PAD_WIDTH,1)  # 화면 정보 state list로 넘겨주기.
 action_size = 3  # 정지,좌,우
 global_step = 0
-max_score = 0
 episodes, scores, avg_q_max_record, scores30 = [], [], [], []
 score_deque = deque(maxlen=30)
 
@@ -61,7 +60,7 @@ def reshape_to_state(ddong_x, ddong_y, man_x, man_y):
     #return np.reshape(state, [1, state_size])
 
 def playgame(gamepad,man,ddong,clock,agent):
-    global global_step, episodes, scores, avg_q_max_record, max_score
+    global global_step, episodes, scores, avg_q_max_record
     end_game = False
     man_x = 0 #PAD_WIDTH * 0.5
     man_y = int(PAD_HEIGHT * 0.9)
@@ -88,7 +87,7 @@ def playgame(gamepad,man,ddong,clock,agent):
     dx = 0
     # 게임 진행.
     while not end_game:
-        reward = 1
+        reward = 0
         epi_step += 1
         global_step += 1
         #if epi_step % 4 == 0: #4단위 frameskip. 4step씩 같은 행동 취하기.
@@ -117,7 +116,7 @@ def playgame(gamepad,man,ddong,clock,agent):
             if value > PAD_HEIGHT:
                 #ddong_x[index] = int(random.randrange(0,PAD_WIDTH - man_width) / 48) * 48
                 ddong_y[index] = -ddong_height
-                #reward = 1 # 똥 안맞으면 reward
+                reward = 1 # 똥 안맞으면 reward
                 score += 1
 
         # 똥 맞았는지 체크
@@ -141,16 +140,12 @@ def playgame(gamepad,man,ddong,clock,agent):
 
 
         # ---여기까지 해당 action에 대해 step끝남
-        if max_score < score and RENDER == False:
-            max_score = score
-            agent.model.save_weights("./max_score_model.h5")
 
         agent.avg_q_max += np.amax(agent.model.predict(state)[0])
         #if epi_step % 4 == 0 or end_game: # 4단위로 frame skip, 끝나는 상황은 체크
         next_state = reshape_to_state(ddong_x, ddong_y, man_x, man_y)
         agent.append_sample(state, action, reward, next_state, end_game)
-        if global_step % 5: # 5step마다 학습하기.
-            agent.train_model()
+        agent.train_model()
         state = next_state
 
         if global_step % agent.update_target_rate == 0:

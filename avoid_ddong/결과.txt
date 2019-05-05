@@ -100,8 +100,13 @@ model5
 
 model6
 필터 8,16,16
-6500epi까지 학습. lr줄이고 이어서.
+6500epi까지 학습. lr줄이고 이어서 학습중@.
 
 최근 30epi평균이 10~20에서 더이상 올라가지 않는 문제.
 
+model7
+update_target_rate 늘려보기
 
+model8
+똥 떨어졌을 시 reward 1 주는거 없앰.
++최고점 score 기록하는 model 계속 저장해주기.

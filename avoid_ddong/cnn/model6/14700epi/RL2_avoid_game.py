@@ -25,8 +25,8 @@ man_height = 4
 
 ##### 학습 variable
 EPISODES = 5000000
-LOAD_MODEL = True
-RENDER = True # rendering하며 model play
+LOAD_MODEL = False
+RENDER = False # rendering하며 model play
 
 TOTAL_DDONG = 8
 
@@ -141,7 +141,7 @@ def playgame(gamepad,man,ddong,clock,agent):
 
 
         # ---여기까지 해당 action에 대해 step끝남
-        if max_score < score and RENDER == False:
+        if max_score < score:
             max_score = score
             agent.model.save_weights("./max_score_model.h5")
 

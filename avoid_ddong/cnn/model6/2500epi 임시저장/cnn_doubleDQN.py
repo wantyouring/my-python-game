@@ -23,7 +23,7 @@ class DoubleDQNAgent:
         self.epsilon_min = 0.01
         self.batch_size = 32
         self.train_start = 5000
-        self.update_target_rate = 3000
+        self.update_target_rate = 1000
         self.memory = deque(maxlen=10000)
         self.avg_q_max = 0 # 학습 잘 되는지 확인.
 
@@ -42,7 +42,6 @@ class DoubleDQNAgent:
     # cnn사용
     def build_model(self):
         model = Sequential()
-        #model.add(Conv2D(8, (8, 8), strides=(8, 8), activation='relu', input_shape=self.state_size))
         model.add(Conv2D(8, (6, 6), strides=(3, 3), activation='relu', input_shape=self.state_size))
         model.add(Conv2D(16,(4,4),strides=(2,2),activation='relu'))
         model.add(Conv2D(16,(2,2),strides=(1,1),activation='relu'))
