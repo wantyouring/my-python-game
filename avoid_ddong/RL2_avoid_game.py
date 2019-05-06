@@ -25,8 +25,8 @@ man_height = 4
 
 ##### 학습 variable
 EPISODES = 5000000
-LOAD_MODEL = True
-RENDER = True # rendering하며 model play
+LOAD_MODEL = False
+RENDER = False # rendering하며 model play
 
 TOTAL_DDONG = 8
 
@@ -70,6 +70,7 @@ def playgame(gamepad,man,ddong,clock,agent):
     fixed_ddong_y = [8, 10, 8, 1, 0, 0, 17, 12, 1, 5, 7, 13, 9, 19, 0, 1, 3, 12, 13, 15, 8, 13, 15, 8, 10, 11, 13, 16, 6, 5]
 
     ddong_speed = 4
+    man_speed = 4
     score = 0
     # 학습 variable
     epi_step = 0
@@ -96,9 +97,9 @@ def playgame(gamepad,man,ddong,clock,agent):
 
         # action에 따른 위치변화.
         if action == 1:
-            dx -= 4
+            dx -= man_speed
         elif action == 2:
-            dx += 4
+            dx += man_speed
         # else action == 0:
         #   dx = dx
 

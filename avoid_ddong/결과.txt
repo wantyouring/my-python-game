@@ -104,9 +104,19 @@ model6
 
 최근 30epi평균이 10~20에서 더이상 올라가지 않는 문제.
 
-model7
+model7 (저장x)
 update_target_rate 늘려보기
+똥 떨어졌을 시 reward 1 주는거 없앰.
++최고점 score 기록하는 model 계속 저장해주기. => 잘 동작 안함.
 
 model8
-똥 떨어졌을 시 reward 1 주는거 없앰.
-+최고점 score 기록하는 model 계속 저장해주기.
+max pooling 넣어보기.
+
+model9
+일정 epi_step마다 학습 agent바꿔 구간별로 학습하기. 여러 agent사용. epi_step 50마다 agent change.
+avg_max_q 의미없음.
+=> 일정 score 이상 올라가지 않음.
+
+model10
+epi_step 30마다 agent change.
+=> score 떨어짐. lr낮춰보기.

@@ -4,6 +4,7 @@ import numpy as np
 import random
 from collections import deque
 from keras.layers.convolutional import Conv2D
+from keras.layers.convolutional import MaxPooling2D
 from keras.layers import Dense, Flatten
 from keras.optimizers import Adam
 from keras.models import Sequential
@@ -22,8 +23,8 @@ class DoubleDQNAgent:
         self.epsilon_decay = 0.9999
         self.epsilon_min = 0.01
         self.batch_size = 32
-        self.train_start = 5000
-        self.update_target_rate = 3000
+        self.train_start = 1000
+        self.update_target_rate = 500
         self.memory = deque(maxlen=10000)
         self.avg_q_max = 0 # 학습 잘 되는지 확인.
 
@@ -43,8 +44,9 @@ class DoubleDQNAgent:
     def build_model(self):
         model = Sequential()
         #model.add(Conv2D(8, (8, 8), strides=(8, 8), activation='relu', input_shape=self.state_size))
-        model.add(Conv2D(8, (6, 6), strides=(3, 3), activation='relu', input_shape=self.state_size))
-        model.add(Conv2D(16,(4,4),strides=(2,2),activation='relu'))
+        model.add(Conv2D(8, (4, 4), strides=(2, 2), activation='relu', input_shape=self.state_size))
+        #model.add(MaxPooling2D(pool_size=(2,2)))
+        #model.add(Conv2D(16,(4,4),strides=(2,2),activation='relu'))
         model.add(Conv2D(16,(2,2),strides=(1,1),activation='relu'))
         model.add(Flatten())
         model.add(Dense(256,activation='relu'))
