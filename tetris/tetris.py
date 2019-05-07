@@ -16,7 +16,7 @@ import sys
 class Block:
     def __init__(self):
         self.turn = random.randrange(0,4) # 4방향
-        self.num = 2#random.randrange(1,8) # 7종류 블록
+        self.num = random.randrange(1,8) # 7종류 블록
         self.pos_i = 0 # 맨 위
         self.pos_j = 5 # 가운데에서 생성
         #self.left_most
@@ -25,21 +25,58 @@ class Block:
         self.stop = False
         # self.list : 각 블록의 turn별로 list정보 저장. [turn][i][j] 3차원 리스트.
         self.list = [[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]] for _ in range(4)] # 3차원 list 초기화
-        if self.num == 1: # ㅁ블럭
+        if self.num == 1: # O block
             self.list = [[[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]] for _ in range(4)]
             self.left_most = [1,1,1,1]
             self.right_most = [2,2,2,2]
-        elif self.num == 2: # ㅡ블럭
+        elif self.num == 2: # I block
             self.list[0] = [[0,0,1,0],[0,0,1,0],[0,0,1,0],[0,0,1,0]]
             self.list[1] = [[0,0,0,0],[0,0,0,0],[1,1,1,1],[0,0,0,0]]
             self.list[2] = [[0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0]]
             self.list[3] = [[0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0]]
             self.left_most = [2,0,2,0]
             self.right_most = [2,3,2,3]
-        # @@@@@@@@@@@@@@@@@@@@나머지 블록 추가하기.
+        elif self.num == 3: # S block
+            self.list[0] = [[0,0,0,0],[0,0,1,1],[0,1,1,0],[0,0,0,0]]
+            self.list[1] = [[0,0,1,0],[0,0,1,1],[0,0,0,1],[0,0,0,0]]
+            self.list[2] = [[0, 0, 0, 0], [0, 0, 1, 1], [0, 1, 1, 0], [0, 0, 0, 0]]
+            self.list[3] = [[0, 0, 1, 0], [0, 0, 1, 1], [0, 0, 0, 1], [0, 0, 0, 0]]
+            self.left_most = [1,2,1,2]
+            self.right_most = [3,3,3,3]
+        elif self.num == 4: # Z block
+            self.list[0] = [[0,0,0,0],[0,1,1,0],[0,0,1,1],[0,0,0,0]]
+            self.list[1] = [[0,0,0,1],[0,0,1,1],[0,0,1,0],[0,0,0,0]]
+            self.list[2] = [[0, 0, 0, 0], [0, 1, 1, 0], [0, 0, 1, 1], [0, 0, 0, 0]]
+            self.list[3] = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 0, 1, 0], [0, 0, 0, 0]]
+            self.left_most = [1,2,1,2]
+            self.right_most = [3,3,3,3]
+        elif self.num == 5: # L block
+            self.list[0] = [[0,0,0,0],[0,1,1,1],[0,1,0,0],[0,0,0,0]]
+            self.list[1] = [[0,0,1,0],[0,0,1,0],[0,0,1,1],[0,0,0,0]]
+            self.list[2] = [[0,0,0,1],[0,1,1,1],[0,0,0,0],[0,0,0,0]]
+            self.list[3] = [[0,1,1,0],[0,0,1,0],[0,0,1,0],[0,0,0,0]]
+            self.left_most = [1,2,1,1]
+            self.right_most = [3,3,3,2]
+        elif self.num == 6: # J block
+            self.list[0] = [[0,0,0,0],[0,1,1,1],[0,0,0,1],[0,0,0,0]]
+            self.list[1] = [[0,0,1,1], [0,0,1,0], [0,0,1,0], [0,0,0,0]]
+            self.list[2] = [[0,1,0,0], [0,1,1,1], [0,0,0,0], [0,0,0,0]]
+            self.list[3] = [[0,0,1,0], [0,0,1,0], [0,1,1,0], [0,0,0,0]]
+            self.left_most = [1,2,1,1]
+            self.right_most = [3,3,3,2]
+        elif self.num == 7: # T block
+            self.list[0] =[[0,0,0,0],[0,1,1,1],[0,0,1,0],[0,0,0,0]]
+            self.list[1] = [[0,0,1,0], [0,0,1,1], [0,0,1,0], [0,0,0,0]]
+            self.list[2] = [[0,0,1,0], [0,1,1,1], [0,0,0,0], [0,0,0,0]]
+            self.list[3] = [[0,0,1,0], [0,1,1,0], [0,0,1,0], [0,0,0,0]]
+            self.left_most = [1,2,1,1]
+            self.right_most = [3,3,3,2]
 
-    def turn_block(self):
-        self.turn = (self.turn + 1) % 4
+    def turn_block(self,clockwise):
+        if clockwise:
+            self.turn = (self.turn + 1) % 4
+        else:
+            self.turn = (self.turn + 3) % 4
 
     #@@@@@@@@@@@끝이면 더 못가게.
     def move_block(self, dir): #왼:-1 오:1 아래:0 (코딩용)위:2
@@ -100,12 +137,24 @@ def block_to_pad(pad,block):
                 gamepad[block.pos_i + i][block.pos_j + j] = block.list[block.turn][i][j]
     return gamepad
 
+def block_crash(gamepad,block):
+    # 블록끼리 crash 판단
+    for i in range(4):
+        for j in range(4):
+            if block.list[block.turn][i][j] != 0 and gamepad[block.pos_i + i][block.pos_j + j] != 0:
+                return 1
+
+    # 벽에 박힘 crash 판단
+    if block.pos_j + block.left_most[block.turn] < 1 or block.pos_j + block.right_most[block.turn] > 10:
+        return 2
+
+    return 0
 
 
 # 메인 게임 함수
-def playgame(pygame):
+def playgame():
     pygame.init()
-    gui = Gui(pygame)
+    gui = Gui(pygame) # GUI 객체
     clock = pygame.time.Clock()
     end_game = False
     new_block = True
@@ -128,23 +177,34 @@ def playgame(pygame):
             block = Block()
             new_block = False
 
-        # 키보드 입력 받기
+        # 키보드 입력 받고 블록 이동가능한지 체크.
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # 종료
                 pygame.quit()
 
-            # @@@@@@@@@@@@@@@@@블록 옆으로 들어갈 수 있는거 수정하기.
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    if block.pos_j + block.left_most[block.turn] > 1: # 블록 벽 넘는지 체크하고 move
-                        block.move_block(-1)
-                elif event.key == pygame.K_RIGHT:
-                    if block.pos_j + block.right_most[block.turn] < 10:
+                    #if block.pos_j + block.left_most[block.turn] > 1: # 블록 벽 넘는지 체크하고 move
+                    block.move_block(-1)
+                    if block_crash(gamepad,block) != 0:
                         block.move_block(1)
+                elif event.key == pygame.K_RIGHT:
+                    #if block.pos_j + block.right_most[block.turn] < 10:
+                    block.move_block(1)
+                    if block_crash(gamepad, block) != 0:
+                        block.move_block(-1)
                 elif event.key == pygame.K_DOWN:
                     block.move_block(0)
                 elif event.key == pygame.K_UP:
-                    block.turn_block()
+                    block.turn_block(True)
+                    if block_crash(gamepad,block) == 1: # 블록crash로 못돌리는 상황이면 돌리기 취소
+                        block.turn_block(False)
+                    if block_crash(gamepad,block) == 2: # 벽에 붙어 못 돌리는 상황이면 돌린 block 벽에 붙여놓는 것으로 바꾸기.
+                        if block.pos_j + block.left_most[block.turn] < 1:
+                            block.pos_j = 1 - block.left_most[block.turn]
+                        elif block.pos_j + block.right_most[block.turn] > 10:
+                            block.pos_j = 10 - block.right_most[block.turn]
+
 
         # 블록 한 칸 내리기
         if step % block.speed == 0:
@@ -181,4 +241,4 @@ def playgame(pygame):
 
 
 if __name__ == "__main__":
-    playgame(pygame)
+    playgame()
