@@ -237,7 +237,7 @@ def playgame():
         gui.update_pad(tmp_pad)
 
         # FPS
-        clock.tick(10)
+        clock.tick(5)
 
 
 if __name__ == "__main__":
