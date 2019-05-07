@@ -119,4 +119,5 @@ avg_max_q 의미없음.
 
 model10
 epi_step 30마다 agent change.
-=> score 떨어짐. lr낮춰보기.
+=> 10점부터 score 다시 떨어짐. lr낮춰보기.
+=> 15점부터 score 다시 떨어짐.  어디가 문제인가...

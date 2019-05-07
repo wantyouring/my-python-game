@@ -18,9 +18,9 @@ class DoubleDQNAgent:
 
         # DDQN 하이퍼 파라미터
         self.discount_factor = 0.99
-        self.learning_rate = 0.0001
+        self.learning_rate = 0.001
         self.epsilon = 1.0
-        self.epsilon_decay = 0.9999
+        self.epsilon_decay = 0.99
         self.epsilon_min = 0.01
         self.batch_size = 32
         self.train_start = 1000
@@ -44,10 +44,10 @@ class DoubleDQNAgent:
     def build_model(self):
         model = Sequential()
         #model.add(Conv2D(8, (8, 8), strides=(8, 8), activation='relu', input_shape=self.state_size))
-        model.add(Conv2D(8, (4, 4), strides=(2, 2), activation='relu', input_shape=self.state_size))
+        model.add(Conv2D(16, (4, 4), strides=(2, 2), activation='relu', input_shape=self.state_size))
         #model.add(MaxPooling2D(pool_size=(2,2)))
         #model.add(Conv2D(16,(4,4),strides=(2,2),activation='relu'))
-        model.add(Conv2D(16,(2,2),strides=(1,1),activation='relu'))
+        model.add(Conv2D(32,(2,2),strides=(1,1),activation='relu'))
         model.add(Flatten())
         model.add(Dense(256,activation='relu'))
         model.add(Dense(self.action_size))

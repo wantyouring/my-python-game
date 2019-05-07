@@ -188,8 +188,9 @@ if __name__ == "__main__":
     for i in range(AGENT_NUM):
         agent.append(DoubleDQNAgent(state_size, action_size))
     if LOAD_MODEL == True:
-        agent.load_model() #@@@@@@@@@모델 로드
-        agent.epsilon = agent.epsilon_min
+        for i in range(AGENT_NUM):
+            agent[i].load_model() #@@@@@@@@@모델 로드
+            agent[i].epsilon = agent.epsilon_min
     if RENDER == True:
         for i in range(AGENT_NUM):
             agent[i].epsilon = -1
@@ -213,7 +214,7 @@ if __name__ == "__main__":
 
 
         episodes.append(e)
-        print("epi:{}. score:{}".format(e,score))
+        print("epi:{}. score:{}. agent_n:{}".format(e,score,int(epi_step / 30)))
         #print("epi : {}. score : {}. epi_step : {}. memory len : {}. epsilon : {}.".format(e,score,epi_step,len(agent.memory),agent.epsilon))
         if e % 50 == 0 and RENDER == False:
             pylab.figure(1)
