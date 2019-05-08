@@ -101,7 +101,7 @@ class Gui:
         pygame.display.set_caption('tetris')
         self.gamepad = pygame.display.set_mode((self.PAD_WIDTH,self.PAD_HEIGHT))
 
-    def update_pad(self,pad):
+    def update_pad(self,pad,score):
         for i in range(22):
             for j in range(12):
                 if pad[i][j] == 9:
@@ -110,15 +110,19 @@ class Gui:
                     self.gamepad.blit(self.empty_img,(j*30,i*30))
                 else:
                     self.gamepad.blit(self.block_img,(j*30,i*30))
+        text = pygame.font.SysFont(None, 30).render('Score : {}'.format(score), True, (255, 255, 255))
+        self.gamepad.blit(text,(240,30))
         pygame.display.update()
 
 
 # 한줄 라인클리어
 def clear_line(pad):
+    clear = False
     for i in range(1,21):
         if 0 in pad[i]: # 빈 칸 있으면 패스
             continue
         pad[i][1] = 8 # 비울 줄 체크
+        clear = True
         break
     for i in range(20,0,-1):
         if pad[i][1] == 8:
@@ -126,7 +130,7 @@ def clear_line(pad):
                 for k in range(1,11):
                     pad[j][k] = pad[j-1][k]
             break
-    return pad
+    return pad, clear
 
 # 패드에 현재 블록 위치 쓰기.(실제 pad에는 안씀)
 def block_to_pad(pad,block):
@@ -160,6 +164,7 @@ def playgame():
     new_block = True
     hard_drop = False
     step = 0
+    score = 0
 
     # gamepad 초기화
     gamepad = [[0] * 12 for _ in range(22)]
@@ -230,7 +235,9 @@ def playgame():
 
                     # 없앨 줄 있으면 클리어하기.(최대 4줄이므로 4번)
                     for _ in range(4):
-                        gamepad = clear_line(gamepad)
+                        gamepad, clear = clear_line(gamepad)
+                        if clear:
+                            score += 1
                     hard_drop = False
                 if hard_drop == False:
                     break
@@ -243,7 +250,7 @@ def playgame():
             print('\r{}'.format(tmp_pad[i]))
         sys.stdout.flush()
 
-        gui.update_pad(tmp_pad)
+        gui.update_pad(tmp_pad,score)
 
         # FPS
         clock.tick(5)
