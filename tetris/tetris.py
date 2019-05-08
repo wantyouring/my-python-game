@@ -158,6 +158,7 @@ def playgame():
     clock = pygame.time.Clock()
     end_game = False
     new_block = True
+    hard_drop = False
     step = 0
 
     # gamepad 초기화
@@ -206,27 +207,33 @@ def playgame():
                             block.pos_j = 1 - block.left_most[block.turn]
                         elif block.pos_j + block.right_most[block.turn] > 10:
                             block.pos_j = 10 - block.right_most[block.turn]
+                elif event.key == pygame.K_SPACE:
+                    hard_drop = True
 
 
         # 블록 한 칸 내리기
-        if step % block.speed == 0:
-            block.move_block(0)
-            # 더 내릴 수 없으면 블록 고정 후 gamepad에 쓰기
-            for i in range(4):
-                for j in range(4):
-                    if block.list[block.turn][i][j] != 0 and gamepad[block.pos_i+i][block.pos_j+j] != 0:
-                        block.stop = True
-            if block.stop == True:
-                block.move_block(2)
-                new_block = True
+        if step % block.speed == 0 or hard_drop == True:
+            while True:
+                block.move_block(0)
+                # 더 내릴 수 없으면 블록 고정 후 gamepad에 쓰기
                 for i in range(4):
                     for j in range(4):
-                        if block.list[block.turn][i][j] != 0:
-                            gamepad[block.pos_i+i][block.pos_j+j] = block.num
+                        if block.list[block.turn][i][j] != 0 and gamepad[block.pos_i+i][block.pos_j+j] != 0:
+                            block.stop = True
+                if block.stop == True:
+                    block.move_block(2)
+                    new_block = True
+                    for i in range(4):
+                        for j in range(4):
+                            if block.list[block.turn][i][j] != 0:
+                                gamepad[block.pos_i+i][block.pos_j+j] = block.num
 
-                # 없앨 줄 있으면 클리어하기.(최대 4줄이므로 4번)
-                for _ in range(4):
-                    gamepad = clear_line(gamepad)
+                    # 없앨 줄 있으면 클리어하기.(최대 4줄이므로 4번)
+                    for _ in range(4):
+                        gamepad = clear_line(gamepad)
+                    hard_drop = False
+                if hard_drop == False:
+                    break
 
         # 현재 블록 gamepad에 쓰기(tmp_pad : 임시 보이기용 pad)
         tmp_pad = block_to_pad(gamepad,block)
