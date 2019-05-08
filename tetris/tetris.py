@@ -195,6 +195,8 @@ def playgame():
                         block.move_block(-1)
                 elif event.key == pygame.K_DOWN:
                     block.move_block(0)
+                    if block_crash(gamepad, block) != 0:
+                        block.move_block(2)
                 elif event.key == pygame.K_UP:
                     block.turn_block(True)
                     if block_crash(gamepad,block) == 1: # 블록crash로 못돌리는 상황이면 돌리기 취소
