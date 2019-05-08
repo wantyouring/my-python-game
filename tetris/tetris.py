@@ -20,7 +20,7 @@ class Block:
         self.pos_i = 0 # 맨 위
         self.pos_j = 5 # 가운데에서 생성
         #self.left_most
-        #self.right_most = [0,0,0,0] # 가장 오른쪽 블록 index체크. 벽 못 넘어가게 방지하기 위해서.
+        #self.right_most # 가장 오른쪽 블록 index체크. 벽 못 넘어가게 방지하기 위해서.
         self.speed = 1 # 블록 떨어지는 속도. 현재 작을수록 빠르게 떨어짐.
         self.stop = False
         # self.list : 각 블록의 turn별로 list정보 저장. [turn][i][j] 3차원 리스트.
@@ -78,7 +78,6 @@ class Block:
         else:
             self.turn = (self.turn + 3) % 4
 
-    #@@@@@@@@@@@끝이면 더 못가게.
     def move_block(self, dir): #왼:-1 오:1 아래:0 (코딩용)위:2
         if dir == -1:
             self.pos_j -= 1
@@ -228,6 +227,11 @@ def playgame():
                 if block.stop == True:
                     block.move_block(2)
                     new_block = True
+                    # 게임 종료
+                    if block.pos_i < 1:
+                        end_game = True
+                        break
+                    # gamepad에 블록 쓰기
                     for i in range(4):
                         for j in range(4):
                             if block.list[block.turn][i][j] != 0:
@@ -244,12 +248,6 @@ def playgame():
 
         # 현재 블록 gamepad에 쓰기(tmp_pad : 임시 보이기용 pad)
         tmp_pad = block_to_pad(gamepad,block)
-        #print('step:{}'.format(step),end='\r')
-        print('block.stop:{}'.format(block.stop))
-        for i in range(22):
-            print('\r{}'.format(tmp_pad[i]))
-        sys.stdout.flush()
-
         gui.update_pad(tmp_pad,score)
 
         # FPS
