@@ -121,3 +121,6 @@ model10
 epi_step 30마다 agent change.
 => 10점부터 score 다시 떨어짐. lr낮춰보기.
 => 15점부터 score 다시 떨어짐.  어디가 문제인가...
+
+model11
+똥 위치 바꿔서 학습.

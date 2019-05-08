@@ -49,7 +49,7 @@ class DoubleDQNAgent:
         #model.add(Conv2D(16,(4,4),strides=(2,2),activation='relu'))
         model.add(Conv2D(32,(2,2),strides=(1,1),activation='relu'))
         model.add(Flatten())
-        model.add(Dense(256,activation='relu'))
+        model.add(Dense(1024,activation='relu'))
         model.add(Dense(self.action_size))
         model.summary()
         model.compile(loss='mse',optimizer=Adam(lr=self.learning_rate))
