@@ -113,7 +113,7 @@ def playgame(gamepad,man,ddong,clock,agent):
 
         # 배경, 사람, 똥 그리기, 점수표시
         if RENDER == True:
-            gamepad.fill(BLACK) # 배경
+            gamepad.fill(BLACK) # 화면 초기화
             gamepad.blit(man, (man_x, man_y)) # 사람
             for index, value in enumerate(ddong_y): # 똥
                 gamepad.blit(ddong,(ddong_x[index],ddong_y[index]))

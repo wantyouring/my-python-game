@@ -113,6 +113,7 @@ model8
 max pooling 넣어보기.
 
 model9
+-----------RL2_avoid_game_multi_agent.py와 cnn_doubleDQN.py사용.------------------=> 여러 agent로 학습.
 일정 epi_step마다 학습 agent바꿔 구간별로 학습하기. 여러 agent사용. epi_step 50마다 agent change.
 avg_max_q 의미없음.
 => 일정 score 이상 올라가지 않음.
@@ -124,3 +125,23 @@ epi_step 30마다 agent change.
 
 model11
 똥 위치 바꿔서 학습.
+
+----------------------RL2_avoid_game.py와 cnn_doubleDQN.py에서 cnn적용하였음.------
+model11
+memory(replay buffer)를 500000으로 키움. 이게 문제같다.
+buffer에 게임 전체 시나리오가 아닌 앞의 일부분, 또는 학습이 잘 되어갈 시 게임 중간 부분까지의 내용만 buffer에 들어가 학습이 잘 되지 않는듯함. 일단 500000으로 키워 결과 확인해보고 내일 더 키워 테스트해보기. 기본 DQN replay buffer 크기가 100만이라고 함.
+
+파이참 기본 메모리 800MB 사용.
+5만 memory찼을때 전체 1500MB 사용. 메모리로 약 700MB 사용
+50만 memory => 800+700*10 = 약8기가. 크롬 다 닫으면 아슬아슬.
+
+https://github.com/reinforcement-learning-kr/how_to_study_rl/wiki/%EA%B0%95%ED%99%94%ED%95%99%EC%8A%B5-%EA%B4%80%EB%A0%A8-%EB%85%B8%ED%95%98%EC%9A%B0
+참고
+
+=> 50만 메모리 딱 8기가 사용한다.
+아직도 학습 잘 안됨.
+
+model12
+discount factor 키워서 학습해보자! 뒤에 먼 보상까지 보고 계산.
+0.99 => 0.99999
+e min 줄여 이어서 학습하자. 탐험이 필요 없는 환경이다.@@@@@@
