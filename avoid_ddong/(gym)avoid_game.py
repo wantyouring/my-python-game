@@ -88,14 +88,16 @@ class CustomEnv(gym.Env):
 env = DummyVecEnv([lambda: CustomEnv()])
 # Define and Train the agent
 model = DQN(CnnPolicy, env,verbose=1)
-#model = DQN.load("model_saved") # continued from 30000 learned model
+#model = DQN.load("model_saved") # continued from 30000 learned model. => error.
 model.learn(total_timesteps=100000)
 model.save("model_saved")
-'''
+
 # test model
 state = env.reset()
 while True:
     action, next_state = model.predict(state)
     state, reward, done, info = env.step(action)
-    env.render()
-'''
+    if done:
+        env.render()
+        break
+
