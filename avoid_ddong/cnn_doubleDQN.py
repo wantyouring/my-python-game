@@ -23,12 +23,12 @@ class DoubleDQNAgent:
 
         # DDQN 하이퍼 파라미터
         self.discount_factor = 0.9999
-        self.learning_rate = 0.0001
+        self.learning_rate = 0.001
         self.epsilon = 1.0
         self.epsilon_decay = 0.9999
-        self.epsilon_min = 0.1
+        self.epsilon_min = 0.01
         self.batch_size = 32
-        self.train_start = 50000
+        self.train_start = 10000
         self.update_target_rate = 1000
         self.memory = deque(maxlen=500000)
         self.avg_q_max = 0 # 학습 잘 되는지 확인.
@@ -49,12 +49,12 @@ class DoubleDQNAgent:
     def build_model(self):
         model = Sequential()
         #model.add(Conv2D(8, (8, 8), strides=(8, 8), activation='relu', input_shape=self.state_size))
-        model.add(Conv2D(4, (4, 4), strides=(2, 2), activation='relu', input_shape=self.state_size, kernel_initializer='he_uniform'))
+        model.add(Conv2D(8, (4, 4), strides=(2, 2), activation='relu', input_shape=self.state_size, kernel_initializer='he_uniform'))
         #model.add(MaxPooling2D(pool_size=(2,2)))
         #model.add(Conv2D(16,(4,4),strides=(2,2),activation='relu'))
-        model.add(Conv2D(8,(2,2),strides=(1,1),activation='relu', kernel_initializer='he_uniform'))
+        model.add(Conv2D(16,(2,2),strides=(1,1),activation='relu', kernel_initializer='he_uniform'))
         model.add(Flatten())
-        model.add(Dense(256,activation='relu', kernel_initializer='he_uniform'))
+        model.add(Dense(128,activation='relu', kernel_initializer='he_uniform'))
         model.add(Dense(self.action_size))
         model.summary()
         #model.compile(loss='mse',optimizer=Adam(lr=self.learning_rate))
