@@ -91,9 +91,9 @@ class Block:
 # GUI
 class Gui:
     def __init__(self,pygame):
-        self.PAD_WIDTH = 360 # 30 * 12
-        self.PAD_HEIGHT = 660# 30 * 22
         self.BLOCK_SIZE = 30
+        self.PAD_WIDTH = BLOCK_SIZE * 12
+        self.PAD_HEIGHT = BLOCK_SIZE * 22
         self.block_img = pygame.image.load('block.png')
         self.block2_img = pygame.image.load('block2.png')
         self.empty_img = pygame.image.load('empty.png')
@@ -104,11 +104,11 @@ class Gui:
         for i in range(22):
             for j in range(12):
                 if pad[i][j] == 9:
-                    self.gamepad.blit(self.block2_img,(j*30,i*30))
+                    self.gamepad.blit(self.block2_img,(j*BLOCK_SIZE,i*BLOCK_SIZE))
                 elif pad[i][j] == 0:
-                    self.gamepad.blit(self.empty_img,(j*30,i*30))
+                    self.gamepad.blit(self.empty_img,(j*BLOCK_SIZE,i*BLOCK_SIZE))
                 else:
-                    self.gamepad.blit(self.block_img,(j*30,i*30))
+                    self.gamepad.blit(self.block_img,(j*BLOCK_SIZE,i*BLOCK_SIZE))
         text = pygame.font.SysFont(None, 30).render('Score : {}'.format(score), True, (255, 255, 255))
         self.gamepad.blit(text,(240,30))
         pygame.display.update()
