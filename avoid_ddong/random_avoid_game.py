@@ -37,7 +37,7 @@ MINI_man_height = 1
 ##### 학습 variable
 EPISODES = 5000000
 LOAD_MODEL = True
-RENDER = False # rendering하며 model play
+RENDER = True # rendering하며 model play
 
 TOTAL_DDONG = 10
 
@@ -167,7 +167,7 @@ def playgame(gamepad,man,ddong,clock,agent):
         #if epi_step % 4 == 0 or end_game: # 4단위로 frame skip, 끝나는 상황은 체크
         next_state = reshape_to_state(ddong_x, ddong_y, man_x, man_y)
         agent.append_sample(state, action, reward, next_state, end_game)
-        if global_step % 5: # 5step마다 학습하기.
+        if global_step % 5 and RENDER == False: # 5step마다 학습하기.
             agent.train_model()
         state = next_state
 
