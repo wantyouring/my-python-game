@@ -14,23 +14,34 @@ from cnn_doubleDQN import DoubleDQNAgent
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 #게임화면 크기
-PAD_WIDTH = 48
-PAD_HEIGHT = 64
+PAD_WIDTH = 480
+PAD_HEIGHT = 640
 #똥크기
-ddong_width = 4
-ddong_height = 4
+ddong_width = 40
+ddong_height = 40
 #사람크기
-man_width = 4
-man_height = 4
+man_width = 40
+man_height = 40
+
+####미니게임화면(학습용)
+#게임화면 크기
+MINI_PAD_WIDTH = 12
+MINI_PAD_HEIGHT = 16
+#똥크기
+MINI_ddong_width = 1
+MINI_ddong_height = 1
+#사람크기
+MINI_man_width = 1
+MINI_man_height = 1
 
 ##### 학습 variable
 EPISODES = 5000000
-LOAD_MODEL = True
-RENDER = True # rendering하며 model play
+LOAD_MODEL = False
+RENDER = False # rendering하며 model play
 
 TOTAL_DDONG = 8
 
-state_size = (PAD_HEIGHT,PAD_WIDTH,1)  # 화면 정보 state list로 넘겨주기.
+state_size = (MINI_PAD_HEIGHT,MINI_PAD_WIDTH,1)  # 화면 정보 state list로 넘겨주기.
 action_size = 3  # 정지,좌,우
 global_step = 0
 max_score = 0
@@ -41,36 +52,37 @@ score_deque = deque(maxlen=30)
 if RENDER == False:
     os.environ["SDL_VIDEODRIVER"] = "dummy" # rendering없이 pygame실행하기.
 
-# state구성. 똥 1, 사람 2, 빈칸 0.
+# state구성. 똥 255, 사람 180, 빈칸 0.
 def reshape_to_state(ddong_x, ddong_y, man_x, man_y):
-    global state_size
-    state = [[0]*PAD_WIDTH for _ in range(PAD_HEIGHT)]
-
-    # 똥 위치 1로
+    mini_ddong_x, mini_ddong_y = [], []
     for i in range(TOTAL_DDONG):
-        for j in range(ddong_height):
-            for k in range(ddong_width):
-                if ddong_y[i] >= 0 and ddong_y[i] + j < PAD_HEIGHT:
-                    state[ddong_y[i] + j][ddong_x[i] + k] = 255
+        mini_ddong_x.append(int(ddong_x[i] / 40))
+        mini_ddong_y.append(int(ddong_y[i] / 40))
 
-    # 사람 위치 2로
-    for i in range(man_height):
-        for j in range(man_width):
-            state[man_y + i][man_x + j] = 180
-    return np.reshape([state],(1,PAD_HEIGHT,PAD_WIDTH,1))
-    #return np.reshape(state, [1, state_size])
+    state = [[0]*MINI_PAD_WIDTH for _ in range(MINI_PAD_HEIGHT)]
+
+    for i in range(TOTAL_DDONG):
+        for j in range(MINI_ddong_height):
+            for k in range(MINI_ddong_width):
+                if mini_ddong_y[i] >= 0 and mini_ddong_y[i] + j < MINI_PAD_HEIGHT:
+                    state[mini_ddong_y[i] + j][mini_ddong_x[i] + k] = 255
+
+    for i in range(MINI_man_height):
+        for j in range(MINI_man_width):
+            state[int(man_y / 40) + i][int(man_x / 40) + j] = 180
+    return np.reshape([state],(1,MINI_PAD_HEIGHT,MINI_PAD_WIDTH,1))
 
 def playgame(gamepad,man,ddong,clock,agent):
     global global_step, episodes, scores, avg_q_max_record, max_score
     end_game = False
-    man_x = 0 #PAD_WIDTH * 0.5
-    man_y = int(PAD_HEIGHT * 0.9)
+    man_x = 0
+    man_y = int(PAD_HEIGHT * 15/16)
     ddong_x, ddong_y = [], []
     fixed_ddong_x = [8, 7, 4, 2, 5, 9, 0, 1, 3, 6, 3, 7, 3, 3, 4, 9, 0, 1, 5, 6, 8, 8, 9, 5, 6, 1, 2, 2, 4, 5]
     fixed_ddong_y = [8, 10, 8, 1, 0, 0, 17, 12, 1, 5, 7, 13, 9, 19, 0, 1, 3, 12, 13, 15, 8, 13, 15, 8, 10, 11, 13, 16, 6, 5]
 
-    ddong_speed = 4
-    man_speed = 4
+    ddong_speed = 40
+    man_speed = 40
     score = 0
     # 학습 variable
     epi_step = 0
@@ -80,8 +92,9 @@ def playgame(gamepad,man,ddong,clock,agent):
     for i in range(TOTAL_DDONG):
         #ddong_x.append(int(random.randrange(0,PAD_WIDTH - man_width) / 48) * 48) # 특정 위치에서만 똥 떨어지게 환경 단순화.
         #ddong_y.append(random.randrange(-PAD_HEIGHT,0)) # 640 / 20 = 32
-        ddong_x.append(int(fixed_ddong_x[i] * 4.8))
-        ddong_y.append(int(fixed_ddong_y[i] * -3.2))
+
+        ddong_x.append(int(fixed_ddong_x[i] * 40))
+        ddong_y.append(int(fixed_ddong_y[i] * -40))
 
     # 초기 state
     state = reshape_to_state(ddong_x, ddong_y, man_x, man_y)
@@ -89,10 +102,14 @@ def playgame(gamepad,man,ddong,clock,agent):
     dx = 0
     # 게임 진행.
     while not end_game:
+        if RENDER == True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT: # 종료
+                    pygame.quit()
+
         reward = 1
         epi_step += 1
         global_step += 1
-        #if epi_step % 4 == 0: #4단위 frameskip. 4step씩 같은 행동 취하기.
         action = agent.get_action(state)
 
         # action에 따른 위치변화.
@@ -118,7 +135,6 @@ def playgame(gamepad,man,ddong,clock,agent):
             if value > PAD_HEIGHT:
                 #ddong_x[index] = int(random.randrange(0,PAD_WIDTH - man_width) / 48) * 48
                 ddong_y[index] = -ddong_height
-                #reward = 1 # 똥 안맞으면 reward
                 score += 1
 
         # 똥 맞았는지 체크
@@ -157,7 +173,7 @@ def playgame(gamepad,man,ddong,clock,agent):
         if global_step % agent.update_target_rate == 0:
             agent.update_target_model()
 
-        if end_game or score >= 500:
+        if end_game or score >= 200:
             avg_q_max_record.append(agent.avg_q_max / float(epi_step))
             return epi_step, score
 
@@ -173,13 +189,13 @@ def playgame(gamepad,man,ddong,clock,agent):
 if __name__ == "__main__":
     #global state_size, action_size
     pygame.init()
-    gamepad = pygame.display.set_mode((PAD_WIDTH, PAD_HEIGHT))
+    gamepad = pygame.display.set_mode((PAD_WIDTH, PAD_HEIGHT),pygame.RESIZABLE)
     pygame.display.set_caption('똥피하기')
     man = pygame.image.load('man.png')
     ddong = pygame.image.load('ddong.png')
     # resize
-    man = pygame.transform.scale(man,(4,4))
-    ddong = pygame.transform.scale(ddong,(4,4))
+    man = pygame.transform.scale(man,(man_width,man_height))
+    ddong = pygame.transform.scale(ddong,(ddong_width,ddong_height))
     clock = pygame.time.Clock()
 
     agent = DoubleDQNAgent(state_size, action_size)
@@ -202,7 +218,7 @@ if __name__ == "__main__":
                 avg += v
             avg /= float(30)
             scores30.append(avg)
-            if avg == 500:
+            if avg >= 200:
                 print("학습끝")
                 sys.exit()
 
