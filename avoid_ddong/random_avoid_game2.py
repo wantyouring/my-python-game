@@ -36,8 +36,8 @@ MINI_man_height = 1
 
 ##### 학습 variable
 EPISODES = 5000000
-LOAD_MODEL = True
-RENDER = True # rendering하며 model play
+LOAD_MODEL = False
+RENDER = False # rendering하며 model play
 
 TOTAL_DDONG = 10
 

@@ -53,10 +53,12 @@ class DoubleDQNAgent:
         #model.add(Conv2D(4, (4, 4), strides=(2, 2), activation='relu', input_shape=self.state_size,
         #                 kernel_initializer='he_uniform'))
         #model.add(Conv2D(16,(4,4),strides=(2,2),activation='relu'))
-        model.add(Conv2D(16,(16, 12),activation='relu', input_shape=self.state_size,
+        model.add(Conv2D(32,(16, 12),activation='relu', input_shape=self.state_size,
                          kernel_initializer='he_uniform',padding='same'))
-        model.add(Conv2D(16,(12,8),activation='relu',kernel_initializer='he_uniform',padding='same'))
+        model.add(Conv2D(32,(12,8),activation='relu',kernel_initializer='he_uniform',padding='same'))
+        model.add(Conv2D(32,(8, 4), activation='relu', kernel_initializer='he_uniform', padding='same'))
         model.add(Flatten())
+        model.add(Dense(512, activation='relu', kernel_initializer='he_uniform'))
         model.add(Dense(512, activation='relu', kernel_initializer='he_uniform'))
         #model.add(Dense(256, activation='relu', kernel_initializer='he_uniform'))
         model.add(Dense(self.action_size))
