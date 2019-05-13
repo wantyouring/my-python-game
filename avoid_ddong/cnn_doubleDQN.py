@@ -22,7 +22,7 @@ class DoubleDQNAgent:
         self.action_size = 3 # 시작 action 1은 제외.
 
         # DDQN 하이퍼 파라미터
-        self.discount_factor = 0.9999
+        self.discount_factor = 0.999
         self.learning_rate = 0.00001
         self.epsilon = 1.0
         self.epsilon_decay = 0.9999
@@ -57,7 +57,8 @@ class DoubleDQNAgent:
                          kernel_initializer='he_uniform'))
         model.add(Conv2D(8, (2, 2), strides=(1, 1), activation='relu', kernel_initializer='he_uniform'))
         model.add(Flatten())
-        model.add(Dense(512,activation='relu', kernel_initializer='he_uniform'))
+        model.add(Dense(1024, activation='relu', kernel_initializer='he_uniform'))
+        model.add(Dense(1024,activation='relu', kernel_initializer='he_uniform'))
         #model.add(Dense(256, activation='relu', kernel_initializer='he_uniform'))
         model.add(Dense(self.action_size))
         model.summary()

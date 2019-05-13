@@ -169,4 +169,23 @@ man, ddong, pad, speed 좌표들의 최소공배수40으로 나눠서(최대로 줄일 수 있는 픽셀
 
 model15
 랜덤한 똥drop. 
-@로컬 학습중.
+180,000epi 학습. render playing결과 어느정도 피하나 매우 초보레벨. 
+
+model15-2
+model dense layer 1024,1024로 키움.
+=> aws에서 학습중@
+현재 36000epi인데 초보레벨로 피하나 거의 금방 죽음. 많이 학습하면 잘 피할듯함. 그러나 model크기가 맞을지 잘 모르겠음. model 바꿔서, parameter바꿔서 테스트해보기.
+
+model15-3
+cnn model layer추가, 키워 학습.
+layer에 padding='same'옵션 추가해주어야 오류 안생김.
+2700epi model우선 save. 학습 더 잘 되는듯함. 그래프 한페이지에 그리게 코드수정 후 재학습.
+
+model15-3-2
+epsilon min 0.01로 줄이고 lr 0.0001로 늘림.
+4300epi(2700 + 1600)epi까지 학습.
+조금씩 평균점수 올라가는중. 똥이 운좋게 잘 떨어지면 점수가 꽤 나오는 경우도 있다!
+
+model 15-3-3
+aws에서 이어서 오래 학습시켜보자.
+ => aws에서 학습중@
