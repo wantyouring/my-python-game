@@ -12,7 +12,7 @@ import keras
 import tensorflow as tf
 
 def huber_loss(y_true, y_pred):
-    return tf.losses.huber_loss(y_true, y_pred)
+    return tf.compat.v1.losses.huber_loss(y_true, y_pred)
 
 class DoubleDQNAgent:
     def __init__(self, state_size, action_size):
